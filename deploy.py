@@ -53,8 +53,8 @@ abi = json.loads(
 #
 # For connecting to ganache
 w3 = Web3(Web3.HTTPProvider(
-    "https://polygon-mumbai.g.alchemy.com/v2/K59YdNGK95akCLJrA1m9nYPZ7JYNa8Me"))
-chain_id = 80001
+    "https://polygon-mumbai.g.alchemy.com/v2/K59YdNGK95akCLJrA1m9nYPZ7JYNa8Me"))  # alchemy HTTP link
+chain_id = 80001  # polygon-mumbai chain id
 
 if chain_id == 4:
     w3.middleware_onion.inject(geth_poa_middleware, layer=0)
@@ -62,13 +62,18 @@ if chain_id == 4:
 # Added print statement to ensure connection suceeded as per
 # https://web3py.readthedocs.io/en/stable/middleware.html#geth-style-proof-of-authority
 
-my_address = "0x042bDdB896fa2B4F5993e3926b7dD53B27f9321E"
+my_address = "0x042bDdB896fa2B4F5993e3926b7dD53B27f9321E"  # --My metamask id
+
+
+# --my private account { metamask => settings => Accounts detials => Export private key }
 private_key = "0x6021d22205954e378994c07b70dae0afd8e67b5eb61c8f799ebfd24f5f010708"
 
 # Create the contract in Python
 SimpleStorage = w3.eth.contract(abi=abi, bytecode=bytecode)
+
 # Get the latest transaction
 nonce = w3.eth.getTransactionCount(my_address)
+
 # Submit the transaction that deploys the contract
 transaction = SimpleStorage.constructor().buildTransaction(
     {
@@ -78,6 +83,7 @@ transaction = SimpleStorage.constructor().buildTransaction(
         "nonce": nonce,
     }
 )
+
 # Sign the transaction
 signed_txn = w3.eth.account.sign_transaction(
     transaction, private_key=private_key)
@@ -93,6 +99,7 @@ print(f"Done! Contract deployed to {tx_receipt.contractAddress}")
 # Working with deployed Contracts
 simple_storage = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
 print(f"Initial Stored Value {simple_storage.functions.retrieve().call()}")
+
 greeting_transaction = simple_storage.functions.store(15).buildTransaction(
     {
         "chainId": chain_id,
@@ -104,6 +111,7 @@ greeting_transaction = simple_storage.functions.store(15).buildTransaction(
 signed_greeting_txn = w3.eth.account.sign_transaction(
     greeting_transaction, private_key=private_key
 )
+
 tx_greeting_hash = w3.eth.send_raw_transaction(
     signed_greeting_txn.rawTransaction)
 print("Updating stored Value...")
