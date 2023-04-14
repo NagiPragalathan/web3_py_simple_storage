@@ -167,7 +167,7 @@ transaction = SimpleStorage.constructor().buildTransaction(
         "nonce": nonce,
     }
 )
-
+nonce = nonce + 1
 # Sign the transaction
 signed_txn = w3.eth.account.sign_transaction(
     transaction, private_key=private_key)
@@ -197,9 +197,11 @@ greeting_transaction = simple_storage.functions.store(15).buildTransaction(
         "chainId": chain_id,
         "gasPrice": w3.eth.gas_price,
         "from": my_address,
-        "nonce": nonce + 1,
+        "nonce": nonce,
     }
 )
+
+nonce = nonce + 1
 
 signed_greeting_txn = w3.eth.account.sign_transaction(
     greeting_transaction, private_key=private_key
@@ -222,9 +224,11 @@ greeting_transaction = simple_storage.functions.store(2).buildTransaction(
         "chainId": chain_id,
         "gasPrice": w3.eth.gas_price,
         "from": my_address,
-        "nonce": nonce + 2,
+        "nonce": nonce,
     }
 )
+
+nonce = nonce + 1
 
 signed_greeting_txn = w3.eth.account.sign_transaction(
     greeting_transaction, private_key=private_key
@@ -233,6 +237,32 @@ signed_greeting_txn = w3.eth.account.sign_transaction(
 tx_greeting_hash = w3.eth.send_raw_transaction(
     signed_greeting_txn.rawTransaction)
 print("Updating stored Value...")
+
+tx_receipt = w3.eth.wait_for_transaction_receipt(tx_greeting_hash)
+
+print(simple_storage.functions.retrieve().call())
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> add person >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+greeting_transaction = simple_storage.functions.addPerson('nagi', 2).buildTransaction(
+    {
+        "chainId": chain_id,
+        "gasPrice": w3.eth.gas_price,
+        "from": my_address,
+        "nonce": nonce,
+    }
+)
+nonce = nonce + 1
+
+signed_greeting_txn = w3.eth.account.sign_transaction(
+    greeting_transaction, private_key=private_key
+)
+
+tx_greeting_hash = w3.eth.send_raw_transaction(
+    signed_greeting_txn.rawTransaction)
+print("Updating person Value...")
 
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_greeting_hash)
 

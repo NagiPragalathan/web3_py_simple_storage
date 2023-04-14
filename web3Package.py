@@ -13,7 +13,7 @@ load_dotenv()
 
 
 def Deploy_Contract(Contract_path, install_solc_v="0.6.0"):
-    with open("./SimpleStorage.sol", "r") as file:
+    with open(Contract_path, "r") as file:
         simple_storage_file = file.read()
 
     # We add these two lines that we forgot from the video!
@@ -48,3 +48,6 @@ def Deploy_Contract(Contract_path, install_solc_v="0.6.0"):
     abi = json.loads(
         compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["metadata"]
     )["output"]["abi"]
+    os.remove("compiled_code.json")
+
+    return abi, bytecode
