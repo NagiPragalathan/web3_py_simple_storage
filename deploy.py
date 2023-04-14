@@ -96,8 +96,16 @@ tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 print(f"Done! Contract deployed to {tx_receipt.contractAddress}")
 
 
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> End Deployment >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+# ----------------------------------------------- Create obj forf contract --------------------------------------------------------
+
 # Working with deployed Contracts
-simple_storage = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
+simple_storage = w3.eth.contract(
+    address='0x3b22933A8b734c666C89C62b2d95E9D1462dA121', abi=abi)
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+
 print(f"Initial Stored Value {simple_storage.functions.retrieve().call()}")
 
 greeting_transaction = simple_storage.functions.store(15).buildTransaction(
@@ -108,6 +116,7 @@ greeting_transaction = simple_storage.functions.store(15).buildTransaction(
         "nonce": nonce + 1,
     }
 )
+
 signed_greeting_txn = w3.eth.account.sign_transaction(
     greeting_transaction, private_key=private_key
 )
@@ -115,6 +124,12 @@ signed_greeting_txn = w3.eth.account.sign_transaction(
 tx_greeting_hash = w3.eth.send_raw_transaction(
     signed_greeting_txn.rawTransaction)
 print("Updating stored Value...")
+
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_greeting_hash)
 
 print(simple_storage.functions.retrieve().call())
+
+print(tx_receipt)
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Next value >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
