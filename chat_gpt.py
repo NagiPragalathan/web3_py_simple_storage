@@ -27,7 +27,7 @@ greeting_transaction = simple_storage.functions.store(2).buildTransaction(
         "chainId": w3.eth.chainId,
         "gasPrice": w3.eth.gas_price,
         "from": my_address,
-        "nonce": nonce + 2,
+        "nonce": nonce,  # the initial nonce should "orginal nonce value" after that you should be increase nonce
     }
 )
 print("transaction sucess..")
