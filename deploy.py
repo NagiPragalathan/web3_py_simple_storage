@@ -102,7 +102,7 @@ print(f"Done! Contract deployed to {tx_receipt.contractAddress}")
 
 # Working with deployed Contracts
 simple_storage = w3.eth.contract(
-    address='0x3b22933A8b734c666C89C62b2d95E9D1462dA121', abi=abi)
+    address='0x52B4100E9474f731C67f43E5C0A24Db756De6c4A', abi=abi)  # the contract deployed from metamask
 
 # ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -129,7 +129,27 @@ tx_receipt = w3.eth.wait_for_transaction_receipt(tx_greeting_hash)
 
 print(simple_storage.functions.retrieve().call())
 
-print(tx_receipt)
-
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Next value >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+greeting_transaction = simple_storage.functions.store(2).buildTransaction(
+    {
+        "chainId": chain_id,
+        "gasPrice": w3.eth.gas_price,
+        "from": my_address,
+        "nonce": nonce + 2,
+    }
+)
+
+signed_greeting_txn = w3.eth.account.sign_transaction(
+    greeting_transaction, private_key=private_key
+)
+
+tx_greeting_hash = w3.eth.send_raw_transaction(
+    signed_greeting_txn.rawTransaction)
+print("Updating stored Value...")
+
+tx_receipt = w3.eth.wait_for_transaction_receipt(tx_greeting_hash)
+
+print(simple_storage.functions.retrieve().call())
